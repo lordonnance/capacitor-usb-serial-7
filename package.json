@@ -1,7 +1,7 @@
 {
   "name": "capacitor-usb-serial",
-  "version": "0.0.1",
-  "description": "This capacitor plugin allows you basic serial-over-usb functionallity",
+  "version": "0.0.2",
+  "description": "This capacitor plugin allows you basic serial-over-usb functionality",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -15,7 +15,7 @@
     "Package.swift",
     "CapacitorUsbSerial.podspec"
   ],
-  "author": "@leeskies",
+  "author": "leeskies",
   "license": "MIT",
   "repository": {
     "type": "git",
