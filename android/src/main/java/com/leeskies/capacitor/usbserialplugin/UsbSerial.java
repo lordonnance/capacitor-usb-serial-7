@@ -193,8 +193,6 @@ public class UsbSerial {
             call.reject("Writing message to port failed: "  + e.getMessage());
         }
     }
-    
-    import java.nio.charset.StandardCharsets;
 
     public void read(PluginCall call) {
         String portKey = call.getString("key");
