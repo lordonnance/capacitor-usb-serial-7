@@ -1,3 +1,5 @@
+export type ReadResponse = { data: string, bytesRead: number };
+
 export interface UsbSerialPlugin {
   getDeviceConnections(): Promise<{ devices: DeviceInfo[] }>;
   
@@ -11,7 +13,7 @@ export interface UsbSerialPlugin {
   
   write(options: { key: string, message: string }): Promise<void>;
   
-  read(options: { key: string }): Promise<{ data: Uint8Array, bytesRead: number }>;
+  read(options: { key: string }): Promise<ReadResponse>;
 }
 
 export interface DeviceInfo {
@@ -31,5 +33,5 @@ export interface DeviceHandler {
 
     write(message: string): Promise<void>;
 
-    read(): Promise<{ data: Uint8Array, bytesRead: number }>;
+    read(): Promise<ReadResponse>;
 }

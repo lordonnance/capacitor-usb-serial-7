@@ -1,6 +1,6 @@
 import { registerPlugin } from '@capacitor/core';
 
-import { DeviceHandler, UsbSerialPlugin } from './definitions';
+import { DeviceHandler, UsbSerialPlugin, ReadResponse } from './definitions';
 
 const UsbSerialPrimitive =
   registerPlugin<UsbSerialPlugin>('UsbSerial');
@@ -20,7 +20,7 @@ const UsbSerialPrimitive =
         async write(message: string): Promise<void> {
           await UsbSerialPrimitive.write({ key: this.device.deviceKey, message });
         },
-        async read(): Promise<{ data: Uint8Array; bytesRead: number }> {
+        async read(): Promise<ReadResponse> {
           return await UsbSerialPrimitive.read({ key: this.device.deviceKey });
         },
       }),
