@@ -1,7 +1,7 @@
 {
   "name": "capacitor-usb-serial",
-  "version": "1.0.0",
-  "description": "This capacitor plugin allows you basic serial-over-usb functionality",
+  "version": "1.0.1",
+  "description": "This capacitor plugin allows basic serial-over-usb functionality",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -39,7 +39,7 @@
     "eslint": "eslint . --ext ts",
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
     "swiftlint": "node-swiftlint",
-    "docgen": "docgen --api UsbSerialPlugin --output-readme README.md --output-json dist/docs.json",
+    "docgen": "",
     "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
