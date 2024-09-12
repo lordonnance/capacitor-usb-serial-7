@@ -154,6 +154,18 @@ Read a message from a device using its assigned portKey
 ### Interfaces
 
 
+#### DeviceHandler
+
+Provides a simplified interface for handling a specific device
+
+| Method           | Type                                                       | Description                       |
+| -----------------| ---------------------------------------------------------- | --------------------------------- |
+| **`connect`**    | <code>(options?: ConnectionParams) => Promise<void></code> | Connect to the device             |
+| **`disconnect`** | <code>() => Promise<void></code>                           | Disconnect from the device        |
+| **`write`**      | <code>(message: string) => Promise<void></code>            | Write a message to the device     |
+| **`read`**       | <code>() => Promise<ReadResponse></code>                   | Read a message from the device    |
+
+
 #### DeviceInfo
 
 Represents information about a connected device
