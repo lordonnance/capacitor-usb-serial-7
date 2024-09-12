@@ -1,6 +1,10 @@
 # capacitor-usb-serial
 
-This capacitor plugin allows basic serial-over-usb functionallity
+This plugin provides a simple interface for USB serial communication in Capacitor applications. It allows you to connect to USB devices, send and receive data, and manage multiple device connections.
+
+The plugin only supports Android devices and it uses [usb-serial-for-android](https://github.com/mik3y/usb-serial-for-android) under the hood.
+
+If you want to contribute the apple part feel free to open an issue / PR on the github repo.
 
 ## Install
 
