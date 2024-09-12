@@ -1,6 +1,6 @@
 # capacitor-usb-serial
 
-This capacitor plugin allows you basic serial-over-usb functionallity
+This capacitor plugin allows basic serial-over-usb functionallity
 
 ## Install
 
@@ -13,6 +13,7 @@ npx cap sync
 
 <docgen-index>
 
+* [`getDeviceHandlers()`](#getdevicehandlers)
 * [`getDeviceConnections()`](#getdeviceconnections)
 * [`openConnection(...)`](#openconnection)
 * [`getActivePorts()`](#getactiveports)
@@ -28,11 +29,30 @@ npx cap sync
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
+Defines the interface for USB serial communication plugin
+
+### getDeviceHandlers()
+
+```typescript
+getDeviceHandlers() => Promise<DeviceHandler[]>
+```
+
+Returns an array of DeviceHandler objects for all connected USB devices.
+This helper function provides a simplified interface for interacting with the plugin methods. It is recommended for most use cases unless more granular control is required.
+Each DeviceHandler object includes methods for connecting, disconnecting, writing to, and reading from a specific device.
+
+**Returns:** <code>Promise&lt;DeviceHandler[]&gt;</code>
+
+--------------------
+
+
 ### getDeviceConnections()
 
 ```typescript
 getDeviceConnections() => Promise<{ devices: DeviceInfo[]; }>
 ```
+
+Returns all connected devices
 
 **Returns:** <code>Promise&lt;{ devices: DeviceInfo[]; }&gt;</code>
 
@@ -42,12 +62,14 @@ getDeviceConnections() => Promise<{ devices: DeviceInfo[]; }>
 ### openConnection(...)
 
 ```typescript
-openConnection(options: { deviceId: number; }) => Promise<{ portKey: string; }>
+openConnection(options: FullConnectionParams) => Promise<{ portKey: string; }>
 ```
 
-| Param         | Type                               |
-| ------------- | ---------------------------------- |
-| **`options`** | <code>{ deviceId: number; }</code> |
+Connect to a device using its deviceId
+
+| Param         | Type                                                                  | Description                                |
+| ------------- | --------------------------------------------------------------------- | ------------------------------------------ |
+| **`options`** | <code><a href="#fullconnectionparams">FullConnectionParams</a></code> | - Connection parameters including deviceId |
 
 **Returns:** <code>Promise&lt;{ portKey: string; }&gt;</code>
 
@@ -60,6 +82,8 @@ openConnection(options: { deviceId: number; }) => Promise<{ portKey: string; }>
 getActivePorts() => Promise<{ ports: string[]; }>
 ```
 
+Returns all active ports
+
 **Returns:** <code>Promise&lt;{ ports: string[]; }&gt;</code>
 
 --------------------
@@ -71,9 +95,11 @@ getActivePorts() => Promise<{ ports: string[]; }>
 endConnection(options: { key: string; }) => Promise<void>
 ```
 
-| Param         | Type                          |
-| ------------- | ----------------------------- |
-| **`options`** | <code>{ key: string; }</code> |
+Disconnect from a device using its assigned portKey
+
+| Param         | Type                          | Description                     |
+| ------------- | ----------------------------- | ------------------------------- |
+| **`options`** | <code>{ key: string; }</code> | - Object containing the portKey |
 
 --------------------
 
@@ -84,9 +110,11 @@ endConnection(options: { key: string; }) => Promise<void>
 endConnections(options?: { keys?: string[] | undefined; } | undefined) => Promise<void>
 ```
 
-| Param         | Type                              |
-| ------------- | --------------------------------- |
-| **`options`** | <code>{ keys?: string[]; }</code> |
+Disconnect from all devices or specified devices
+
+| Param         | Type                              | Description                                                     |
+| ------------- | --------------------------------- | --------------------------------------------------------------- |
+| **`options`** | <code>{ keys?: string[]; }</code> | - Optional object containing an array of portKeys to disconnect |
 
 --------------------
 
@@ -97,9 +125,11 @@ endConnections(options?: { keys?: string[] | undefined; } | undefined) => Promis
 write(options: { key: string; message: string; }) => Promise<void>
 ```
 
-| Param         | Type                                           |
-| ------------- | ---------------------------------------------- |
-| **`options`** | <code>{ key: string; message: string; }</code> |
+Write a message to a device using its assigned portKey
+
+| Param         | Type                                           | Description                                          |
+| ------------- | ---------------------------------------------- | ---------------------------------------------------- |
+| **`options`** | <code>{ key: string; message: string; }</code> | - Object containing the portKey and message to write |
 
 --------------------
 
@@ -110,9 +140,11 @@ write(options: { key: string; message: string; }) => Promise<void>
 read(options: { key: string; }) => Promise<ReadResponse>
 ```
 
-| Param         | Type                          |
-| ------------- | ----------------------------- |
-| **`options`** | <code>{ key: string; }</code> |
+Read a message from a device using its assigned portKey
+
+| Param         | Type                          | Description                     |
+| ------------- | ----------------------------- | ------------------------------- |
+| **`options`** | <code>{ key: string; }</code> | - Object containing the portKey |
 
 **Returns:** <code>Promise&lt;<a href="#readresponse">ReadResponse</a>&gt;</code>
 
@@ -124,19 +156,32 @@ read(options: { key: string; }) => Promise<ReadResponse>
 
 #### DeviceInfo
 
-| Prop             | Type                |
-| ---------------- | ------------------- |
-| **`deviceKey`**  | <code>string</code> |
-| **`deviceId`**   | <code>number</code> |
-| **`productId`**  | <code>number</code> |
-| **`vendorId`**   | <code>number</code> |
-| **`deviceName`** | <code>string</code> |
+Represents information about a connected device
+
+| Prop             | Type                | Description                       |
+| ---------------- | ------------------- | --------------------------------- |
+| **`deviceKey`**  | <code>string</code> | Unique identifier used internally |
+| **`deviceId`**   | <code>number</code> | Numeric identifier for the device |
+| **`productId`**  | <code>number</code> | Product ID of the device          |
+| **`vendorId`**   | <code>number</code> | Vendor ID of the device           |
+| **`deviceName`** | <code>string</code> | Human-readable name of the device |
+
+
+#### FullConnectionParams
+
+Extends ConnectionParams to include deviceId
+
+| Prop           | Type                | Description                      |
+| -------------- | ------------------- | -------------------------------- |
+| **`deviceId`** | <code>number</code> | Unique identifier for the device |
 
 
 ### Type Aliases
 
 
 #### ReadResponse
+
+Represents the response from a read operation
 
 <code>{ data: string, bytesRead: number }</code>
 
