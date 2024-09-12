@@ -55,7 +55,13 @@ public class UsbSerial {
     }
 
     public void openConnection(PluginCall call) {
-        int deviceId = call.getInt("deviceId");
+        int deviceId;
+        try {
+            deviceId = call.getInt("deviceId");
+        } catch (NullPointerException e) {
+            call.reject("DeviceId cannot be null");
+            return;
+        }
         for (UsbSerialDriver driver : UsbSerialProber.getDefaultProber().findAllDrivers(manager)) {
             if (driver.getDevice().getDeviceId() == deviceId) {
                 UsbDevice device = driver.getDevice();
@@ -101,6 +107,13 @@ public class UsbSerial {
     }
 
     private void proceedWithConnection(UsbSerialDriver driver, UsbDevice device, PluginCall call) {
+        int baudRate = call.getInt("baudRate", Const.DEFAULT_BAUD_RATE);
+        int dataBits = call.getInt("dataBits", Const.DEFAULT_DATA_BITS);
+        int stopBits = call.getInt("stopBits", Const.DEFAULT_STOP_BITS);
+        String parityKey = call.getString("parity");
+        int parity = Const.DEFAULT_PARITY;
+        if (Const.PARITY.containsKey(parityKey)) parity = Const.PARITY.get(parityKey);
+        if (!Const.STOP_BITS.containsKey(stopBits)) call.reject("Invalid int value for stopBits: " + stopBits);
         UsbDeviceConnection connection = manager.openDevice(device);
         if (connection == null) {
             call.reject("Failed to open device connection");
@@ -109,7 +122,7 @@ public class UsbSerial {
         UsbSerialPort port = driver.getPorts().get(0);
         try {
             port.open(connection);
-            port.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+            port.setParameters(baudRate, dataBits, stopBits, parity);
             String key = generatePortKey(device);
             activePorts.put(key, port);
             call.resolve();
@@ -184,10 +197,6 @@ public class UsbSerial {
         }
         try {
             byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
-            if (messageBytes == null) {
-                call.reject("Failed to parse message");
-                return;
-            }
             port.write(messageBytes, Const.WRITE_WAIT_MILLIS);
         } catch (Exception e) {
             call.reject("Writing message to port failed: "  + e.getMessage());

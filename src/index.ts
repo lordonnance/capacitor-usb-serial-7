@@ -1,17 +1,17 @@
 import { registerPlugin } from '@capacitor/core';
 
-import { DeviceHandler, UsbSerialPlugin, ReadResponse } from './definitions';
+import { DeviceHandler, UsbSerialPlugin, ReadResponse, ConnectionParams, GetDeviceHandlers } from './definitions';
 
 const UsbSerialPrimitive =
   registerPlugin<UsbSerialPlugin>('UsbSerial');
 
-  const getDeviceHandlers = async () => {
+  const getDeviceHandlers: GetDeviceHandlers = async () => {
     const deviceConnections = await UsbSerialPrimitive.getDeviceConnections();
     const deviceHandlers: DeviceHandler[] = deviceConnections.devices.map(
       device => ({
         device,
-        async connect(): Promise<void> {
-          await UsbSerialPrimitive.openConnection({ deviceId: this.device.deviceId });
+        async connect(options?: ConnectionParams): Promise<void> {
+          await UsbSerialPrimitive.openConnection({ deviceId: this.device.deviceId, ...options });
         },
 
         async disconnect(): Promise<void> {
