@@ -212,6 +212,7 @@ public class UsbSerial {
                 int numBytesRead = port.read(buffer, Const.READ_WAIT_MILLIS);
 
                 if (numBytesRead < 0) {
+                    JSObject result = new JSObject();
                     result.put("data", "Read operation failed after write");
                     result.put("bytesRead", 0);
                     call.resolve(result);
