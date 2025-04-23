@@ -126,14 +126,15 @@ Disconnect from all devices or specified devices
 ### write(...)
 
 ```typescript
-write(options: { key: string; message: string; }) => Promise<void>
+write(options: { key: string; message: string; noRead?: boolean }) => Promise<ReadResponse>
 ```
 
-Write a message to a device using its assigned portKey
+Write a message to a device using its assigned portKey and performs a quick read straight afterwards.
+If noRead is passed as true the read would be skipped. 
 
 | Param         | Type                                           | Description                                          |
 | ------------- | ---------------------------------------------- | ---------------------------------------------------- |
-| **`options`** | <code>{ key: string; message: string; }</code> | - Object containing the portKey and message to write |
+| **`options`** | <code>{ key: string; message: string; noRead?: boolean }</code> | - Object containing the portKey and message to write |
 
 --------------------
 
