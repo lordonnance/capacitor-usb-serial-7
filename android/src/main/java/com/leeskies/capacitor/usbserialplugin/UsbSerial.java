@@ -208,6 +208,9 @@ public class UsbSerial {
             port.write(messageBytes, Const.WRITE_WAIT_MILLIS);
 
             if (!noRead) {
+                byte[] clearBuffer = new byte[8192];
+                port.read(clearBuffer, 10);
+
                 byte[] buffer = new byte[8192];
                 int numBytesRead = port.read(buffer, Const.READ_WAIT_MILLIS);
 
