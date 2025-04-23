@@ -1,6 +1,6 @@
 {
   "name": "capacitor-usb-serial",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This capacitor plugin allows basic serial-over-usb functionality",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
