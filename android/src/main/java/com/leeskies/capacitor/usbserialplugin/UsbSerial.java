@@ -80,7 +80,12 @@ public class UsbSerial {
         String appName = context.getApplicationInfo().loadLabel(context.getPackageManager()).toString();
         String ACTION_USB_PERMISSION = appName + ".USB_PERMISSION";
 
-        PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), flags);
+
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         BroadcastReceiver usbReceiver = new BroadcastReceiver() {
             @Override
@@ -190,16 +195,44 @@ public class UsbSerial {
     public void write(PluginCall call) {
         String portKey = call.getString("key");
         String message = call.getString("message");
+        Boolean noRead = call.getBoolean("noRead", false);
+
         UsbSerialPort port = activePorts.get(portKey);
         if (port == null) {
             call.reject("Specified port not found: " + portKey);
             return;
         }
+
         try {
             byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
             port.write(messageBytes, Const.WRITE_WAIT_MILLIS);
+
+            if (!noRead) {
+                byte[] clearBuffer = new byte[8192];
+                port.read(clearBuffer, 10);
+
+                byte[] buffer = new byte[8192];
+                int numBytesRead = port.read(buffer, Const.READ_WAIT_MILLIS);
+
+                if (numBytesRead < 0) {
+                    JSObject result = new JSObject();
+                    result.put("data", "Read operation failed after write");
+                    result.put("bytesRead", 0);
+                    call.resolve(result);
+                    return;
+                }
+
+                String data = new String(buffer, 0, numBytesRead, StandardCharsets.UTF_8).trim();
+
+                JSObject result = new JSObject();
+                result.put("data", data);
+                result.put("bytesRead", numBytesRead);
+                call.resolve(result);
+            } else {
+                call.resolve();
+            }
         } catch (Exception e) {
-            call.reject("Writing message to port failed: "  + e.getMessage());
+            call.reject("Communication with port failed: " + e.getMessage());
         }
     }
 

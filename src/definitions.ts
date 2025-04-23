@@ -38,10 +38,10 @@ export interface UsbSerialPlugin {
   
   /**
    * Write a message to a device using its assigned portKey
-   * @param {{key: string, message: string}} options - Object containing the portKey and message to write
-   * @returns {Promise<void>} A promise that resolves when the message is written
+   * @param {{key: string, message: string, noRead?: boolean}} options - Object containing the portKey and message to write. Pass noRead to skip the immediate read response
+   * @returns {Promise<ReadResponse>} A promise that resolves when the message is written
    */
-  write(options: { key: string, message: string }): Promise<void>;
+  write(options: { key: string, message: string, noRead?: boolean }): Promise<ReadResponse>;
   
   /**
    * Read a message from a device using its assigned portKey
@@ -109,9 +109,9 @@ export interface DeviceHandler {
     /**
      * Write a message to the device (shorthand for UsbSerial.write)
      * @param {string} message - The message to write
-     * @returns {Promise<void>} A promise that resolves when the message is written
+     * @returns {Promise<ReadResponse>} A promise that resolves when the message is written
      */
-    write(message: string): Promise<void>;
+    write(message: string): Promise<ReadResponse>;
 
     /**
      * Read from the device (shorthand for UsbSerial.read)

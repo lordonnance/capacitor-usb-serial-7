@@ -17,8 +17,9 @@ const UsbSerialPrimitive =
         async disconnect(): Promise<void> {
           await UsbSerialPrimitive.endConnection({ key: this.device.deviceKey });
         },
-        async write(message: string): Promise<void> {
-          await UsbSerialPrimitive.write({ key: this.device.deviceKey, message });
+        async write(message: string): Promise<ReadResponse> {
+          const response = await UsbSerialPrimitive.write({ key: this.device.deviceKey, message });
+          return response
         },
         async read(): Promise<ReadResponse> {
           return await UsbSerialPrimitive.read({ key: this.device.deviceKey });
