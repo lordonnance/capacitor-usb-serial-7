@@ -1,6 +1,6 @@
 {
-  "name": "capacitor-usb-serial",
-  "version": "1.0.3",
+  "name": "@welkom/capacitor-usb-serial",
+  "version": "7.0.0",
   "description": "This capacitor plugin allows basic serial-over-usb functionality",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
