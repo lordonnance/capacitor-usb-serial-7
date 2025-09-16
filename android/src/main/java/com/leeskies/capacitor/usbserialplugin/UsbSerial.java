@@ -9,8 +9,6 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
@@ -27,12 +25,7 @@ import java.util.Map;
 public class UsbSerial {
     private Context context;
     private UsbManager manager;
-    private Map<String, UsbSerialPort> activePorts = new HashMap<>();// usb permission tag name
-    public static final String USB_PERMISSION ="com.sdl.welkom.access.USB_PERMISSION";
-    // USB permission broadcastreceiver
-    private final BroadcastReceiver broadcastReceiver;
-    // activity reference from UsbSerialPlugin
-    private AppCompatActivity mActivity;
+    private Map<String, UsbSerialPort> activePorts = new HashMap<>();
 
     private String generatePortKey(UsbDevice device) {
         return device.getDeviceName() + "_" + device.getDeviceId();
@@ -41,49 +34,6 @@ public class UsbSerial {
     public UsbSerial(Context context) {
         this.context = context;
         this.manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if(USB_PERMISSION.equals(action)) {
-                    usbPermission = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)
-                            ? UsbPermission.Granted : UsbPermission.Denied;
-                    if (mActivity != null && openSerialCall != null) {
-                        openSerial(mActivity, openSerialCall);
-                        mActivity.unregisterReceiver(this);
-                    }
-                } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                    if (usbAttachedDetachedCall != null) {
-                        JSObject jsObject = new JSObject();
-                        usbAttachedDetachedCall.setKeepAlive(true);
-                        jsObject.put("success", true);
-                        jsObject.put("data", "NEW_USB_DEVICE_ATTACHED");
-                        usbAttachedDetachedCall.resolve(jsObject);
-                    }
-                }  else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                    if (usbAttachedDetachedCall != null) {
-                        JSObject jsObject = new JSObject();
-                        usbAttachedDetachedCall.setKeepAlive(true);
-                        jsObject.put("success", true);
-                        jsObject.put("data", "USB_DEVICE_DETACHED");
-                        usbAttachedDetachedCall.resolve(jsObject);
-                    }
-                }
-            }
-        };
-    }
-
-    public JSObject usbAttachedDetached(AppCompatActivity activity, PluginCall call) {
-        this.mActivity = activity;
-        JSObject jsObject = new JSObject();
-        usbAttachedDetachedCall = call;
-        call.setKeepAlive(true);
-        this.mActivity.registerReceiver(broadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED));
-        this.mActivity.registerReceiver(broadcastReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
-        jsObject.put("success", true);
-        jsObject.put("data", "REGISTERED");
-        return jsObject;
     }
 
     public List<JSObject> getDeviceConnections() {
