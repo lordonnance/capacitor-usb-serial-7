@@ -1,8 +1,21 @@
 /** Represents the response from a read operation */
 export type ReadResponse = { data: string, bytesRead: number };
 
+export interface UsbSerialResponse {
+  success: boolean;
+  error?: UsbSerialError;
+  data?: any;
+}
+export interface UsbSerialError {
+  message: string;
+  cause: string;
+}
+export type CallbackID = string;
+
+export type MyPluginCallback = (data: UsbSerialResponse) => void;
 /** Defines the interface for USB serial communication plugin */
 export interface UsbSerialPlugin {
+  usbAttachedDetached(callback: MyPluginCallback): Promise<CallbackID>;
   /** 
    * Returns all connected devices
    * @returns {Promise<{devices: DeviceInfo[]}>} A promise that resolves to an object containing an array of connected devices
